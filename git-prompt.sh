@@ -173,9 +173,9 @@ __posh_git_echo () {
     local WorkingForegroundColor=$(__posh_color '\e[1;31m') # Red
     local WorkingBackgroundColor=
 
-    local StashForegroundColor=$(__posh_color '\e[0;34m') # Darker blue
+    local StashForegroundColor=$(__posh_color '\e[1;34m') # Dark blue
     local StashBackgroundColor=
-    local StashText='$'
+    local StashText=$'\xE2\x86\xB7 '
 
     local RebaseForegroundColor=$(__posh_color '\e[0m') # reset
     local RebaseBackgroundColor=
@@ -300,6 +300,7 @@ __posh_git_echo () {
     elif [ 'true' = "$(git rev-parse --is-inside-work-tree 2>/dev/null)" ]; then
         if $ShowStashState; then
             git rev-parse --verify refs/stash >/dev/null 2>&1 && hasStash=true
+            local stashCount="`git stash list 2>/dev/null | wc -l | tr -d '\n'`"
         fi
         __posh_git_ps1_upstream_divergence
     fi
@@ -364,13 +365,13 @@ __posh_git_echo () {
 
     # branch
     if (( $__POSH_BRANCH_BEHIND_BY > 0 && $__POSH_BRANCH_AHEAD_BY > 0 )); then
-        gitstring+="$BranchBehindAndAheadBackgroundColor$BranchBehindAndAheadForegroundColor$branchstring $BranchBehindAndAheadStatusSymbol"
+        gitstring+="$BranchBehindAndAheadBackgroundColor$BranchBehindAndAheadForegroundColor$branchstring$BranchBehindAndAheadStatusSymbol"
     elif (( $__POSH_BRANCH_BEHIND_BY > 0 )); then
-        gitstring+="$BranchBehindBackgroundColor$BranchBehindForegroundColor$branchstring $BranchBehindStatusSymbol"
+        gitstring+="$BranchBehindBackgroundColor$BranchBehindForegroundColor$branchstring$BranchBehindStatusSymbol"
     elif (( $__POSH_BRANCH_AHEAD_BY > 0 )); then
-        gitstring+="$BranchAheadBackgroundColor$BranchAheadForegroundColor$branchstring $BranchAheadStatusSymbol"
+        gitstring+="$BranchAheadBackgroundColor$BranchAheadForegroundColor$branchstring$BranchAheadStatusSymbol"
     else
-        gitstring+="$BranchBackgroundColor$BranchForegroundColor$branchstring $BranchIdenticalStatusToSymbol"
+        gitstring+="$BranchBackgroundColor$BranchForegroundColor$branchstring$BranchIdenticalStatusSymbol"
     fi
 
     # index status
@@ -399,7 +400,9 @@ __posh_git_echo () {
     gitstring+="$AfterBackgroundColor$AfterForegroundColor$AfterText"
 
     if $ShowStashState && $hasStash; then
-        gitstring+="$StashBackgroundColor$StashForegroundColor"$StashText
+        gitstring+="$BeforeBackgroundColor$BeforeForegroundColor$BeforeText"
+        gitstring+="$StashBackgroundColor$StashForegroundColor"$StashText$stashCount
+        gitstring+="$AfterBackgroundColor$AfterForegroundColor$AfterText"
     fi
     gitstring+="$DefaultBackgroundColor$DefaultForegroundColor"
     echo "$gitstring"
