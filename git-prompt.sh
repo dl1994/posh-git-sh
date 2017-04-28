@@ -93,7 +93,7 @@
 #
 # bash.enableStatusSymbol
 # -----------------------
-
+#
 # Option | Description
 # ------ | -----------
 # true   | _Default_. Status symbols (`≡` `↑` `↓` `↕`) will be shown.
@@ -143,34 +143,34 @@ __posh_git_echo () {
     local DefaultForegroundColor=$(__posh_color '\e[m') # Default no color
     local DefaultBackgroundColor=
 
-    local BeforeText=' ['
-    local BeforeForegroundColor=$(__posh_color '\e[1;33m') # Yellow
+    local BeforeText='─['
+    local BeforeForegroundColor=$(__posh_color '\e[m') # Default no color
     local BeforeBackgroundColor=
     local DelimText=' |'
     local DelimForegroundColor=$(__posh_color '\e[1;33m') # Yellow
     local DelimBackgroundColor=
 
     local AfterText=']'
-    local AfterForegroundColor=$(__posh_color '\e[1;33m') # Yellow
+    local AfterForegroundColor=$(__posh_color '\e[m') # Default no color
     local AfterBackgroundColor=
 
     local BranchForegroundColor=$(__posh_color '\e[1;36m')  # Cyan
     local BranchBackgroundColor=
     local BranchAheadForegroundColor=$(__posh_color '\e[1;32m') # Green
     local BranchAheadBackgroundColor=
-    local BranchBehindForegroundColor=$(__posh_color '\e[0;31m') # Red
+    local BranchBehindForegroundColor=$(__posh_color '\e[0;31m') # Dark red
     local BranchBehindBackgroundColor=
     local BranchBehindAndAheadForegroundColor=$(__posh_color '\e[1;33m') # Yellow
     local BranchBehindAndAheadBackgroundColor=
 
     local BeforeIndexText=''
-    local BeforeIndexForegroundColor=$(__posh_color '\e[1;32m') # Dark green
+    local BeforeIndexForegroundColor=$(__posh_color '\e[1;32m') # Green
     local BeforeIndexBackgroundColor=
 
-    local IndexForegroundColor=$(__posh_color '\e[1;32m') # Dark green
+    local IndexForegroundColor=$(__posh_color '\e[1;32m') # Green
     local IndexBackgroundColor=
 
-    local WorkingForegroundColor=$(__posh_color '\e[0;31m') # Dark red
+    local WorkingForegroundColor=$(__posh_color '\e[1;31m') # Red
     local WorkingBackgroundColor=
 
     local StashForegroundColor=$(__posh_color '\e[0;34m') # Darker blue
