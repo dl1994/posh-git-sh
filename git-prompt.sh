@@ -154,6 +154,8 @@ __posh_git_echo () {
     local AfterForegroundColor=$(__posh_color '\e[m') # Default no color
     local AfterBackgroundColor=
 
+    local BranchUntrackedForegroundColor=$(__posh_color '\e[1;37m') # White
+    local BranchUntrackedBackgroundColor=
     local BranchForegroundColor=$(__posh_color '\e[1;36m')  # Cyan
     local BranchBackgroundColor=
     local BranchAheadForegroundColor=$(__posh_color '\e[1;32m') # Green
@@ -217,6 +219,7 @@ __posh_git_echo () {
     fi
 
     # these globals are updated by __posh_git_ps1_upstream_divergence
+    __POSH_BRANCH_TRACKED=""
     __POSH_BRANCH_AHEAD_BY=0
     __POSH_BRANCH_BEHIND_BY=0
 
@@ -364,7 +367,9 @@ __posh_git_echo () {
     gitstring="$BeforeBackgroundColor$BeforeForegroundColor$BeforeText"
 
     # branch
-    if (( $__POSH_BRANCH_BEHIND_BY > 0 && $__POSH_BRANCH_AHEAD_BY > 0 )); then
+    if [[ -z "$__POSH_BRANCH_TRACKED" ]]; then
+        gitstring+="$BranchUntrackedBackgroundColor$BranchUntrackedForegroundColor$branchstring$BranchIdenticalStatusSymbol"
+    elif (( $__POSH_BRANCH_BEHIND_BY > 0 && $__POSH_BRANCH_AHEAD_BY > 0 )); then
         gitstring+="$BranchBehindAndAheadBackgroundColor$BranchBehindAndAheadForegroundColor$branchstring$BranchBehindAndAheadStatusSymbol"
     elif (( $__POSH_BRANCH_BEHIND_BY > 0 )); then
         gitstring+="$BranchBehindBackgroundColor$BranchBehindForegroundColor$branchstring$BranchBehindStatusSymbol"
@@ -431,7 +436,7 @@ __posh_gitdir ()
     fi
 }
 
-# Updates the global variables `__POSH_BRANCH_AHEAD_BY` and `__POSH_BRANCH_BEHIND_BY`.
+# Updates the global variables `__POSH_BRANCH_TRACKED`, `__POSH_BRANCH_AHEAD_BY` and `__POSH_BRANCH_BEHIND_BY`.
 __posh_git_ps1_upstream_divergence ()
 {
     local key value
@@ -495,6 +500,9 @@ __posh_git_ps1_upstream_divergence ()
         ;;
     esac
 
+    __POSH_BRANCH_TRACKED=""
+    IFS=$' \t\n' read -r __POSH_BRANCH_TRACKED <<< "`git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null`"
+
     __POSH_BRANCH_AHEAD_BY=0
     __POSH_BRANCH_BEHIND_BY=0
     # Find how many commits we are ahead/behind our upstream
@@ -509,6 +517,7 @@ __posh_git_ps1_upstream_divergence ()
             esac
         done <<< "`git rev-list --left-right $upstream...HEAD 2>/dev/null`"
     fi
+    : ${__POSH_BRANCH_TRACKED:=""}
     : ${__POSH_BRANCH_AHEAD_BY:=0}
     : ${__POSH_BRANCH_BEHIND_BY:=0}
 }
