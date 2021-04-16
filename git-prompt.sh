@@ -207,11 +207,13 @@ __posh_git_echo () {
         *)     EnableStatusSymbol=true ;;
     esac
 
+    local BranchUntrackedStatusSymbol=''
     local BranchIdenticalStatusSymbol=''
     local BranchAheadStatusSymbol=''
     local BranchBehindStatusSymbol=''
     local BranchBehindAndAheadStatusSymbol=''
     if $EnableStatusSymbol; then
+      BranchUntrackedStatusSymbol=$' \xE2\x8A\x94' # Square cup
       BranchIdenticalStatusSymbol=$' \xE2\x89\xA1' # Three horizontal lines
       BranchAheadStatusSymbol=$' \xE2\x86\x91' # Up Arrow
       BranchBehindStatusSymbol=$' \xE2\x86\x93' # Down Arrow
@@ -368,7 +370,7 @@ __posh_git_echo () {
 
     # branch
     if [[ -z "$__POSH_BRANCH_TRACKED" ]]; then
-        gitstring+="$BranchUntrackedBackgroundColor$BranchUntrackedForegroundColor$branchstring$BranchIdenticalStatusSymbol"
+        gitstring+="$BranchUntrackedBackgroundColor$BranchUntrackedForegroundColor$branchstring$BranchUntrackedStatusSymbol"
     elif (( $__POSH_BRANCH_BEHIND_BY > 0 && $__POSH_BRANCH_AHEAD_BY > 0 )); then
         gitstring+="$BranchBehindAndAheadBackgroundColor$BranchBehindAndAheadForegroundColor$branchstring$BranchBehindAndAheadStatusSymbol"
     elif (( $__POSH_BRANCH_BEHIND_BY > 0 )); then
